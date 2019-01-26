@@ -14,17 +14,21 @@ layout: default
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author | escape }}</span></span>
       {%- endif -%}</p>
   </header>
-
-  <div class="post-content e-content" itemprop="articleBody">
-    {{ content }}
-  </div>
-
+  
   {% if site.leancloud.enable %}
+    <div class="view-count-section" >
        <span id="{{ page.url }}" class="leancloud_visitors" data-flag-title="{{ page.title }}">
         <span class="post-meta-item-text"> View count:  </span>
         <span class="leancloud-visitors-count"></span>
        </span>
+     <div>
    {% endif %}
+  
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+
   
   {%- if site.disqus.shortname -%}
     {%- include disqus_comments.html -%}
