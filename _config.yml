@@ -52,6 +52,12 @@ google_analytics: UA-54567036-3
 # Build settings
 theme: minima
 
+# Page view counter
+leancloud:
+  enable: true
+  app_id: yNj9BL0Ybb7kgJpoLRBcivpE-gzGzoHsz
+  app_key: hkTHDVFTS2YMkbbyczk65UE1
+
 plugins:
  - jekyll-feed
  - jekyll-seo-tag
