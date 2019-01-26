@@ -42,8 +42,12 @@ minima:
 header_pages:
  - about.md
 
+# Disqus for comments
 disqus:
   shortname: yancy-blog
+
+# GA for view count
+google_analytics: UA-54567036-3
 
 # Build settings
 theme: minima
