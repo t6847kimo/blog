@@ -42,6 +42,9 @@ minima:
 #header_pages:
 # - about.md
 
+disqus:
+  shortname: yancy-blog
+
 # Build settings
 theme: minima
 
