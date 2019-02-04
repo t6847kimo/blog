@@ -157,8 +157,7 @@ As a result, `_IS_EMPTY_CASE_` is only meaningful with `0, 0, 0, 1`, since it mu
 
 So, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`.
 
-We achieve the goal! Yeah!!
-
+**Note: We let the other cases meaningless on purpose to let it become empty!**
 
 # Full Code
 ```c
@@ -182,11 +181,10 @@ We achieve the goal! Yeah!!
         HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),  \
         HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
         HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
-        ) 
-												
+        )
+
 #define PASTES(_0, _1, _2, _3, _4 ) _0 ## _1 ## _2 ## _3 ## _4
 #define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTES(_IS_EMPTY_CASE_, _0, _1, _2, _3))
-
 #define eprintf(...) fprintf (stderr, __VA_ARGS__)
 
 int main(){
@@ -200,12 +198,14 @@ int main(){
   eprintf(bar(1,2,3));
   //NOTE: This case will fail since we support at most 2 arguments in _ARG3
   eprintf(1,2,3);
-  // expanded result
-  //ISEMPTY(1,2,3) -> _ISEMPTY(
+  // Expanded result:
+  // ISEMPTY(1,2,3) -> 
+  // _ISEMPTY(
   // HAS_COMMA(1,2,3),  -> _ARGS3( 1, 2, 3 , 1, 0) -> 3
-  //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) ->3 
-  //HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
-  //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
-  //_ISEMPTY(3,3,3(), 3()) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 3 3 3(), 3()))  -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
+  // HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) -> 3
+  // HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
+  // HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
+  // )
+  // _ISEMPTY(3, 3, 3(), 3()) -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
 }
 ```
