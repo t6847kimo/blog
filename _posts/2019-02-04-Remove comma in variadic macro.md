@@ -72,9 +72,7 @@ Note: `_ARG3` macro only support at most 2 arguments, so this one will expand as
 
 `HAS_COMMA(1,2,3)` -> `_ARG3(1, 2, 3, 1, 0)` -> `3`
 # Solution
-Now we have one macro to generate `,` when argument is empty, and another macro to detect `,`.
-
-Combining these macros, we can derive the `ISEMPY()` macro do perform the argument check.
+Combining these two macro, we can derive the `ISEMPY()` macro do perform the argument check.
 
 ```c
 #define ISEMPTY(...) \
@@ -83,36 +81,67 @@ Combining these macros, we can derive the `ISEMPY()` macro do perform the argume
         HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__),  \
         HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
         HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
-        ) 
+        )
+#define _IS_EMPTY_CASE_0001 ,
+#define PASTES(_0, _1, _2, _3, _4 ) _0 ## _1 ## _2 ## _3 ## _4
+#define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTES(_IS_EMPTY_CASE_, _0, _1, _2, _3))
 ```
-We leave the `_ISEMPTY` macro to later, let's dig into these four `HAS_COMMA` macro.
 
-`HAS_COMMA(__VA_ARGS__)` is for typical cases, as explained above, it will return `1` if and only if argument contains `,`.
-`HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__)` is to check whether `__VA_ARGS__`'s first argument contains `()`
+Let's dig into these four `HAS_COMMA` macro and leave the others macro to later.
+
+`HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)` is the main check, did you notice that this is `TEST()`?
+
+In fact, the remaining three macro is only for detecting some corner cases.
+
+`HAS_COMMA(__VA_ARGS__)` is for typical cases, as explained above, it will return `1` if argument contains `,`.
+`HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__)` is to check whether the first argument of `__VA_ARGS__` contains `()`
 `HAS_COMMA(_TRIGGER_PARENTHESIS_ (1))` -> `HAS_COMMA(,)` -> `1`.
 `HAS_COMMA(__VA_ARGS__ (/*empty*/))` is for special case, it checks whether the argument is another macro/function without argument.
 For example, `#define foo(...) 1`, then `HAS_COMMA(foo ())` -> `HAS_COMMA(1)` -> `1`.
 
-Same, give some arguments in `ISEMPTY`.
+Now we almost achieve the goal, let's give test some cases in ISEMPTY():
 
 ```c
-		ISEMPTY() -> ISEMPTY(
-		HAS_COMMA()  -> _ARGS(  ,  1, 0) -> 0
-		HAS_COMMA(_TRIGGER_PARENTHESIS_ ), ->_ARGS( , 1, 0) -> 0
-		HAS_COMMA(()), -> _ARGS((), 1, 0) -> 0
-		HAS_COMMA(_TRIGGER_PARENTHESIS_ ())) -> _ARGS( , , 1, 0) -> 1
-		_ISEMPTY(0,0,0,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE, 0, 0, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0001) -> HAS_COMMA(,) -> 1
+ISEMPTY() -> _ISEMPTY(
+HAS_COMMA(), //  -> _ARGS(  ,  1, 0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ ), // ->_ARGS( , 1, 0) -> 0
+HAS_COMMA(()), // -> _ARGS((), 1, 0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ ())) // -> _ARGS( , , 1, 0) -> 1
+-> _ISEMPTY(0, 0, 0, 1)
 ```
+
 ```c
-//ISEMPTY((1)) -> _ISEMPTY(
-//HAS_COMMA((1)), -> _ARG3((1) ,1,0) -> 0
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)), ->  _ARG3(    , , 1, 0) ->1
-//HAS_COMMA((1) ()), -> _ARG3((1) (), 1, 0) ->0
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)())  -> _ARG3(  ,(),1,0) ->1 
-// _ISEMPTY(0,1,0,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 0, 1, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0101) -> HAS_COMMA() -> 0
+ISEMPTY((1)) -> _ISEMPTY(
+HAS_COMMA((1)), // -> _ARG3((1) ,1,0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)), // ->  _ARG3(    , , 1, 0) -> 1
+HAS_COMMA((1) ()), // -> _ARG3((1) (), 1, 0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)()) //  -> _ARG3(  ,(),1,0) -> 1 
+-> _ISEMPTY(0, 1, 0, 1)
 ```
 
+```c
+ISEMPTY(1,2) -> _ISEMPTY(
+HAS_COMMA(1,2), -> _ARGS(1, 2, 1, 0) -> 1
+HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2), -> _ARGS(1, 2, 1, 0) -> 1
+HAS_COMMA(1, 2 ()),  ->_ARGS(1, 2 (), 1, 0) -> 1
+HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,  2())) -> _ARG3(1, 2, (), 1, 0) ->1
+-> _ISEMPTY(1,1,1,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE, 1, 1, 1, 1))
+-> HAS_COMMA(_IS_EMPTY_CASE_1111)		-> HAS_COMMA() -> 0
+```
 
+```c
+ISEMPTY(bar(1)) -> _ISEMPTY(
+HAS_COMMA(bar(1)),  -> _ARG3(bar(1) ,1,0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ bar(1)), -> _ARG3(bar(1) ,1, 0 )-> 0
+HAS_COMMA(bar(1) ()),  -> _ARG3(bar(1) (), 1,0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ bar(1)())  -> _ARG3(bar(1) (), 1,0) -> 0
+_ISEMPTY(0,0,0,0)
+```
+
+OK, I think we have enough cases. As you can see, the expanded value is `0,0,0,1` only if we pass empty argument.
+As a result, `_IS_EMPTY_CASE_` is only meaningful with `0, 0, 0, 1`, since it must concat with `0, 0, 0, 1`. 
+
+# Full Code
 ```c
 #define _ARG3(_0, _1, _2, ...) _2
 #define HAS_COMMA(...) _ARG3(__VA_ARGS__, 1, 0)
@@ -125,7 +154,7 @@ Same, give some arguments in `ISEMPTY`.
 // 16 arguments
 //#define _ARG16( _0,  _1,  _2,  _3,  _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) _15
 //#define HAS_COMMA(...) _ARG16(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-
+// HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 0, 1, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0101) -> HAS_COMMA() -> 0
 #define _TRIGGER_PARENTHESIS_ (...) ,
 
 #define ISEMPTY(...) \
@@ -145,13 +174,7 @@ Same, give some arguments in `ISEMPTY`.
 #define PRINT_EXPAND_IS_EMPTY_0(...)  foo(1, 2, 3, __VA_ARGS__)
 #define PRINT_EXPAND_IS_EMPTY_1(...) foo(1, 2, 3)
 
-void foor(int a, ...)
-{
-}
-int bar(...)
-{
-    return 0;
-}
+_ISEMPTY(0,0,0,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE, 0, 0, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0001) -> HAS_COMMA(,) -> 1
 
 int main(){
     PRINT();
@@ -167,29 +190,12 @@ int main(){
 		
 		//NOTE: This case will fail since we support at most 2 arguments in _ARG3
 		PRINT(1,2,3);
-	
-		//ISEMPTY(1,2) -> _ISEMPTY(
-		// HAS_COMMA(1,2), -> _ARGS(1, 2, 1, 0) -> 1
-		//HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2), -> _ARGS(1, 2, 1, 0) -> 1
-		//HAS_COMMA(1, 2 ()),  ->_ARGS(1, 2 (), 1, 0) -> 1
-		//HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,  2())) -> _ARG3(1, 2, (), 1, 0) ->1
-		// _ISEMPTY(1,1,1,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE, 1, 1, 1, 1))
--> HAS_COMMA(_IS_EMPTY_CASE_1111)		-> HAS_COMMA() -> 0
-//ISEMPTY(1,2,3) -> _ISEMPTY(
-// HAS_COMMA(1,2,3),  -> _ARGS3( 1, 2, 3 , 1, 0) -> 3
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) ->3 
-//HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
-//_ISEMPTY(3,3,3(), 3()) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 3 3 3(), 3()))  -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
-
-//ISEMPTY(bar(1)) -> _ISEMPTY(
-// HAS_COMMA(bar(1)),  -> _ARG3(bar(1) ,1,0) -> 0
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ bar(1)), -> _ARG3(bar(1) ,1, 0 )-> 0
-
-// HAS_COMMA(bar(1) ()),  -> _ARG3(bar(1) (), 1,0) -> 0
-//HAS_COMMA(_TRIGGER_PARENTHESIS_ bar(1)())  -> _ARG3(bar(1) (), 1,0) -> 0
-//_ISEMPTY(0,0,0,0) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 0, 0,0,0)) -> HAS_COMMA(_IS_EMPTY_CASE_0000) -> HAS_COMMA() -> 0
-
-
-}.
+    // expanded result
+    //ISEMPTY(1,2,3) -> _ISEMPTY(
+    // HAS_COMMA(1,2,3),  -> _ARGS3( 1, 2, 3 , 1, 0) -> 3
+    //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) ->3 
+    //HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
+    //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
+    //_ISEMPTY(3,3,3(), 3()) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 3 3 3(), 3()))  -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
+}
 ```
