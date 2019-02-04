@@ -122,10 +122,10 @@ HAS_COMMA(_TRIGGER_PARENTHESIS_ ()) \ // -> _ARGS( , , 1, 0) -> 1
 
 ```c
 ISEMPTY((1)) -> _ISEMPTY( \
-HAS_COMMA((1)), // -> _ARG3((1) ,1,0) -> 0
-HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)), // ->  _ARG3(    , , 1, 0) -> 1
-HAS_COMMA((1) ()), // -> _ARG3((1) (), 1, 0) -> 0
-HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)() //  -> _ARG3(  ,(),1,0) -> 1
+HAS_COMMA((1)), \ // -> _ARG3((1) ,1,0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)), \ // ->  _ARG3(    , , 1, 0) -> 1
+HAS_COMMA((1) ()), \ // -> _ARG3((1) (), 1, 0) -> 0
+HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)() \ //  -> _ARG3(  ,(),1,0) -> 1
 )
 -> _ISEMPTY(0, 1, 0, 1)
 ```
