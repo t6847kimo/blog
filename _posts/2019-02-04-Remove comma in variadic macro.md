@@ -2,7 +2,7 @@
 title: "Remove the comma in variadic macro"
 layout: post
 tags: [C, Pre-Processor, GCC, Variadic Macro]
-published: false
+published: true
 comments: true
 ---
 
@@ -76,6 +76,7 @@ Same as above, give some test arguments in `HAS_COMMA()` to give a better explan
 Note: `_ARG3` macro only support at most 2 arguments, so this one will expand as the 3rd argument:
 
 `HAS_COMMA(1,2,3)` -> `_ARG3(1, 2, 3, 1, 0)` -> `3`
+
 # Solution
 Combining these two macro, we can derive the `ISEMPY()` macro to perform the argument check.
 
@@ -157,8 +158,7 @@ As a result, `_IS_EMPTY_CASE_` is only meaningful with `0, 0, 0, 1`, since it mu
 
 **Note: We let the other cases meaningless on purpose to let it become empty!**
 
-Finally, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`!
-
+Finally, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`
 
 # Full Code
 ```c
