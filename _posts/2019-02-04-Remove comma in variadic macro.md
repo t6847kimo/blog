@@ -96,7 +96,7 @@ Let's dig into these four `HAS_COMMA` macro and leave the others macro to later.
 
 `HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)` is the main check, did you notice that this is `TEST()`?
 
-In fact, the remaining three macro is only for detecting some corner cases.
+In fact, the remaining three macro are only for detecting some corner cases.
 
 `HAS_COMMA(__VA_ARGS__)` is for typical cases, as explained above, it will return `1` if argument contains `,`.
 
@@ -155,9 +155,10 @@ As you can see, the expanded value in `_ISEMPTY()` is `0,0,0,1` only if we pass 
 
 As a result, `_IS_EMPTY_CASE_` is only meaningful with `0, 0, 0, 1`, since it must concat with `0, 0, 0, 1`.
 
-So, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`.
-
 **Note: We let the other cases meaningless on purpose to let it become empty!**
+
+Finally, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`!
+
 
 # Full Code
 ```c
