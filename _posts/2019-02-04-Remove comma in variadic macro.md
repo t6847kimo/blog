@@ -184,9 +184,11 @@ Finally, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMM
         HAS_COMMA(_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
         )
 
-#define PASTES(_0, _1, _2, _3, _4 ) _0 ## _1 ## _2 ## _3 ## _4
-#define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTES(_IS_EMPTY_CASE_, _0, _1, _2, _3))
-#define eprintf(...) fprintf (stderr, __VA_ARGS__)
+#define eprintf(...) _PRINT(ISEMPTY(__VA_ARGS__), __VA_ARGS__)
+#define _PRINT(is_empty, ...) _PRINT_EXPAND_CHECK_EMPTY(is_empty, __VA_ARGS__)
+#define _PRINT_EXPAND_CHECK_EMPTY(is_empty, ...) PRINT_EXPAND_IS_EMPTY_ ##is_empty (__VA_ARGS__)
+#define PRINT_EXPAND_IS_EMPTY_0(...)  fprintf(stderr, __VA_ARGS__)
+#define PRINT_EXPAND_IS_EMPTY_1(...)  /* empty macro */
 
 int main(){
   eprintf();
