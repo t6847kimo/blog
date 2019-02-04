@@ -173,7 +173,7 @@ Finally, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMM
 // 16 arguments
 //#define _ARG16( _0,  _1,  _2,  _3,  _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) _15
 //#define HAS_COMMA(...) _ARG16(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-// HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 0, 1, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0101) -> HAS_COMMA() -> 0
+
 #define _TRIGGER_PARENTHESIS_ (...) ,
 
 #define ISEMPTY(...) \
