@@ -11,14 +11,14 @@ comments: true
 
 For example, if we define a macro as the example in [GNU's preprocessor section: Variadic Macro](https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html).
 
-` #define eprintf(…) fprintf (stderr, __VA_ARGS__)`
+` #define eprintf(...) fprintf (stderr, __VA_ARGS__)`
 
 When we call `eprintf();` it becomes `fprintf(stderr,);`  
 Then  it raise compiler error: *[Error] expected expression before ')' token*
 
 In fact, for typical case, you can directly modify the above macro to this.
 
-`#define eprintf(format, …) fprintf (stderr, format, ##__VA_ARGS__)`
+`#define eprintf(format, ...) fprintf (stderr, format, ##__VA_ARGS__)`
 
 > Historically, GNU CPP has also had another extension to handle the trailing comma: the ‘##’ token paste operator has a special meaning when placed between a comma and a variable argument. Despite the introduction of `__VA_OPT__`, this extension remains supported in GNU CPP, for backward compatibility. and the variable argument is left out when the eprintf macro is used, then the comma before the ‘##’ will be deleted. This does not happen if you pass an empty argument, nor does it happen if the token preceding ‘##’ is anything other than a comma.
 
@@ -110,7 +110,7 @@ For example, `#define foo(...) 1`, then `HAS_COMMA(foo ())` -> `HAS_COMMA(1)` ->
 Now we almost achieve the goal, let's give test some cases in ISEMPTY():
 
 ```c
-ISEMPTY() -> _ISEMPTY(
+ISEMPTY() -> _ISEMPTY( \
 HAS_COMMA(), \ //  -> _ARGS(  ,  1, 0) -> 0
 HAS_COMMA(_TRIGGER_PARENTHESIS_ ), \ // ->_ARGS( , 1, 0) -> 0
 HAS_COMMA(()), \ // -> _ARGS((), 1, 0) -> 0
@@ -120,7 +120,7 @@ HAS_COMMA(_TRIGGER_PARENTHESIS_ ()) \ // -> _ARGS( , , 1, 0) -> 1
 ```
 
 ```c
-ISEMPTY((1)) -> _ISEMPTY(
+ISEMPTY((1)) -> _ISEMPTY( \
 HAS_COMMA((1)), // -> _ARG3((1) ,1,0) -> 0
 HAS_COMMA(_TRIGGER_PARENTHESIS_ (1)), // ->  _ARG3(    , , 1, 0) -> 1
 HAS_COMMA((1) ()), // -> _ARG3((1) (), 1, 0) -> 0
@@ -149,9 +149,15 @@ HAS_COMMA(_TRIGGER_PARENTHESIS_ bar(1)() \ //  -> _ARG3(bar(1) (), 1,0) -> 0
 -> _ISEMPTY(0, 0, 0, 0)
 ```
 
-OK, I think we have enough cases. As you can see, the expanded value in `_ISEMPTY()` is `0,0,0,1` only if we pass empty argument.
+OK, I think we have enough cases.
+
+As you can see, the expanded value in `_ISEMPTY()` is `0,0,0,1` only if we pass empty argument.
+
 As a result, `_IS_EMPTY_CASE_` is only meaningful with `0, 0, 0, 1`, since it must concat with `0, 0, 0, 1`.
-So, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`!
+
+So, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)` -> `1`.
+
+We achieve the goal! Yeah!!
 
 
 # Full Code
@@ -181,34 +187,25 @@ So, `_ISEMPTY(0, 0, 0, 1)` -> `HAS_COMMA(_IS_EMPTY_CASE_0001)` -> `HAS_COMMA(,)`
 #define PASTES(_0, _1, _2, _3, _4 ) _0 ## _1 ## _2 ## _3 ## _4
 #define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTES(_IS_EMPTY_CASE_, _0, _1, _2, _3))
 
-#define PRINT(...) _PRINT(ISEMPTY(__VA_ARGS__), __VA_ARGS__)
-#define _PRINT(count, ...) _PRINT_EXPAND_CHECK_EMPTY(count, __VA_ARGS__)
-#define _PRINT_EXPAND_CHECK_EMPTY(count, ...) PRINT_EXPAND_IS_EMPTY_ ##count (__VA_ARGS__)
-#define PRINT_EXPAND_IS_EMPTY_0(...)  foo(1, 2, 3, __VA_ARGS__)
-#define PRINT_EXPAND_IS_EMPTY_1(...) foo(1, 2, 3)
-
-_ISEMPTY(0,0,0,1) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE, 0, 0, 0, 1)) -> HAS_COMMA(_IS_EMPTY_CASE_0001) -> HAS_COMMA(,) -> 1
+#define eprintf(...) fprintf (stderr, __VA_ARGS__)
 
 int main(){
-    PRINT();
-		PRINT(1);
-		PRINT(1,2);
-		
-		//Parenthesis case
-		PRINT((1));
-		
-		//Function call case
-		PRINT(bar(1));
-		PRINT(bar(1,2,3));
-		
-		//NOTE: This case will fail since we support at most 2 arguments in _ARG3
-		PRINT(1,2,3);
-    // expanded result
-    //ISEMPTY(1,2,3) -> _ISEMPTY(
-    // HAS_COMMA(1,2,3),  -> _ARGS3( 1, 2, 3 , 1, 0) -> 3
-    //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) ->3 
-    //HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
-    //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
-    //_ISEMPTY(3,3,3(), 3()) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 3 3 3(), 3()))  -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
+  eprintf();
+	eprintf(1);
+	eprintf(1,2);
+  //Parenthesis case
+	eprintf((1));
+	//Function call case
+	eprintf(bar(1));
+	eprintf(bar(1,2,3));
+  //NOTE: This case will fail since we support at most 2 arguments in _ARG3
+  eprintf(1,2,3);
+  // expanded result
+  //ISEMPTY(1,2,3) -> _ISEMPTY(
+  // HAS_COMMA(1,2,3),  -> _ARGS3( 1, 2, 3 , 1, 0) -> 3
+  //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1, 2,3), -> _ARG3(1,2,3, 1,0) ->3 
+  //HAS_COMMA(1,2,3 ()), -> _ARG3(1,2,3 (), 1,0) -> 3()
+  //HAS_COMMA(_TRIGGER_PARENTHESIS_ 1,2,3 ()) -> _ARG3(1,2,3 (), 1,0) -> 3()
+  //_ISEMPTY(3,3,3(), 3()) -> HAS_COMMA(PASTES(_IS_EMPTY_CASE_, 3 3 3(), 3()))  -> HAS_COMMA(_IS_EMPTY_CASE_333()3()) -> build fail!!
 }
 ```
