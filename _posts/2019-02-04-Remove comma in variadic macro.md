@@ -192,12 +192,12 @@ We achieve the goal! Yeah!!
 int main(){
   eprintf();
   eprintf(1);
-	eprintf(1,2);
+  eprintf(1,2);
   //Parenthesis case
-	eprintf((1));
-	//Function call case
-	eprintf(bar(1));
-	eprintf(bar(1,2,3));
+  eprintf((1));
+  //Function call case
+  eprintf(bar(1));
+  eprintf(bar(1,2,3));
   //NOTE: This case will fail since we support at most 2 arguments in _ARG3
   eprintf(1,2,3);
   // expanded result
