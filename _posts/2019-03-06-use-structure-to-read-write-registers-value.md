@@ -42,7 +42,7 @@ void foo(unsigned long a_val, unsigned long b_val, unsigned long c_val){
 
 從[Compiler Explorer](https://godbolt.org/)(ARM64 GCC 8.2 **-O2**)測試的assembly結果如下([https://godbolt.org/z/3MRiMJ](https://godbolt.org/z/3MRiMJ))
 
-可以看到需要分別計算A/B/C register的base address(Line2~ 10)才能寫值
+可以看到需要分別計算A/B/C register的base address(Line2~10)才能寫值。
 ```
 foo:
         mov     x5, 65288
@@ -113,7 +113,8 @@ foo:
     Field  |   X    |   Y   |   Z     |       W         |
 
 
-假如要對Y寫值(故意挑個中間的!)，以 bit operation操作的話會寫成如下，我想看到`SET_REG_A_Y_FIELD`就知道我的意思了!! 實在是有夠麻煩，當Regitser / Field一多根本沒辦法維護
+假如要對Y寫值(故意挑個中間的)，以 bit operation操作的話會寫成如下，我想看到`SET_REG_A_Y_FIELD`就知道我的意思了吧！
+實在是有夠麻煩，當Regitser / Field一多根本沒辦法維護。
 
 ```c
 #define REG_BASE_ADDR (0x10000000FFFFF00)
