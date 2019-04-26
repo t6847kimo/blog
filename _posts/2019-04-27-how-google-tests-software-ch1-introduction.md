@@ -1,7 +1,9 @@
 ---
 title: '"How Google Tests Software?" Ch1 - Introduction 重點&心得'
 layout: post
-tags: How Google Tests Software，CI
+tags: [How Google Tests Software, CI]
+published: true
+comments: true
 ---
 
 ![How Google Tests Software (Picture From Amazon)](https://images-na.ssl-images-amazon.com/images/I/41Pgtv7yKNL._SX384_BO1,204,203,200_.jpg)
