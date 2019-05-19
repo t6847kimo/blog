@@ -45,10 +45,9 @@ Output: "bb"
 #### 基本版程式碼
 
 ```cpp
-int Z(string s, int i){
-  int l = i - 1, r = i + 1;
-  int ret = 0;
-  while(l >= 0 && r <s.length() && s[l] == s[r]){
+int Z(string s, int l, int r){
+  int ret = 0
+  while(l >= 0 && r < s.length() && s[l] == s[r]){
     ret += 1;
     l -= 1;
     r += 1;
@@ -59,13 +58,13 @@ string basic_manacher(string s) {
   // pre-process s
   string S = "#";
   for(int i = 0; i < s.length(); i++){
- 	 S = S + s[i] + '#';
+    S = S + s[i] + '#';
   }
 
   // calculate LPS array
   int *LPS = new int[S.length()];
   for(int i = 0; i < S.length(); i++){
-  	LPS[i] = Z(S, i);
+    LPS[i] = Z(S, i - 1, i + 1);
   }
 
   // find the index of max LPS
@@ -80,9 +79,9 @@ string basic_manacher(string s) {
   // get the sub string of S[max_center - max_Z, ..., max_center + max_Z] and remove "#"
   string ans;
   for(int i = max_center - max_Z ; i < max_center + max_Z; i++){
-  	if(S[i] == '#') 
-    	continue;
-  		ans += S[i];
+    if(S[i] == '#') 
+      continue;
+    ans += S[i];
   }
   return ans;
 }
