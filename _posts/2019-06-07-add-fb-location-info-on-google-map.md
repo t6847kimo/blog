@@ -13,7 +13,9 @@ comments: falstrue
 
 > 今年5月2日Google發文預告，將在7月16日開發，調整收費模式。每位用到Google地圖架設服務的開發者，不論是否達到Google地圖收費的標準，都得申請API key，並且綁訂信用卡卡號。而每位都有每位200美元的免費額度，超過才會需要繳錢給Google。
 
-不過我們不用付費還是可以像這篇一樣用最基本的功能來Demo, 只是會跳出警示跟浮水印,. 如果真的要當產品供人大量使用的就要三思了! 有顧慮的話可以考慮開源免費的 [OpenStreet Map](https://www.openstreetmap.org/) , 圖資主要以國外的較充足且API可能相較起來沒這麼強大, 沒辦法, 畢竟一分錢一分貨嘛!
+不過我們不用付費還是可以像這篇一樣用最基本的功能來Demo, 只是會跳出警示跟浮水印, 如果真的要當產品供人大量使用的就要三思了! 
+
+有顧慮的話可以考慮開源免費的 [OpenStreet Map](https://www.openstreetmap.org/) , 圖資主要以國外的較充足且API可能相較起來沒這麼強大, 畢竟一分錢一分貨嘛!
 
 Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 這篇講的主要為網頁版的 **Maps Javascript API**.
 
@@ -169,8 +171,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 ![Google Map with FB posts location info](https://raw.githubusercontent.com/t6847kimo/blog/master/assets/img/Google%20Map%20Demo.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2OTg1NjExNjEsLTEzNjY0Mzg5NTQsLT
-EyNjk2NTQ1NDMsMjEyNjc4NTIzNSwtMjExOTI1MzkzNiwtMzE0
-Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3XX
-0=
+eyJoaXN0b3J5IjpbNDQ0MzMzMzMwLC0xMzY2NDM4OTU0LC0xMj
+Y5NjU0NTQzLDIxMjY3ODUyMzUsLTIxMTkyNTM5MzYsLTMxNDM4
+NjAyLDQ0NjM3NzM5LC01OTg2MzA3MTIsMTkyNjY2NTU2N119
 -->
