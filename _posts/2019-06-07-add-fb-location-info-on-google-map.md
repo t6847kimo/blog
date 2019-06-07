@@ -31,7 +31,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 
 
 ## Full Code
-因為Google Map API實在太簡單(讓人都變笨了XD), 上面的範例已經做完一半了, 接下來只要把上次撈出來的資料打點出來就行了!
+因為Google Map API實在太簡單(讓人都變笨了XD), 上面的範例已經快做完了, 接下來只要把上次撈出來的資料打點出來就大功告成!
 
 比較需要注意的是FB data的格式稍微複雜一些, 建議可以先用上次提到的圖型API或是console output出來看一下內容.
 
@@ -170,8 +170,8 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 ![Google Map with FB posts location info](https://raw.githubusercontent.com/t6847kimo/blog/master/assets/img/Google%20Map%20Demo.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MjQwNDYyODIsLTEzNjY0Mzg5NTQsLT
-EyNjk2NTQ1NDMsMjEyNjc4NTIzNSwtMjExOTI1MzkzNiwtMzE0
-Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3XX
-0=
+eyJoaXN0b3J5IjpbMjAwMjg1NTM3OSwtMTM2NjQzODk1NCwtMT
+I2OTY1NDU0MywyMTI2Nzg1MjM1LC0yMTE5MjUzOTM2LC0zMTQz
+ODYwMiw0NDYzNzczOSwtNTk4NjMwNzEyLDE5MjY2NjU1NjddfQ
+==
 -->
