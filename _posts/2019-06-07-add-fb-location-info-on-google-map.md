@@ -38,13 +38,103 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 一樣記得替換掉以下`YOUR_APP_ID`  &  `YOUR_ACCESS_TOKEN` & `YOUR_API_KEY`, 如果跑在local端則可以把`key=YOUR_API_KEY&`這段拿掉純demo用.
 
 ```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Google Map with FB posts location info</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <!-- Replace the value of the key parameter with your own API key. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <script>
+      function initFbData(map){
+        FB.init({
+          appId            : 'YOUR_APP_ID',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.2'
+        });
+        FB.api(
+          '/me',
+          'GET',
+          {
+            "fields":"id,name,posts.limit(50){place,message}",
+            "access_token": "YOUR_ACCESS_TOKEN"
+          },
+          function(response) {
+            // uncomment to show response content
+            // console.log(response);
+            response.posts.data.forEach(function(element){
+              // filter posts which without place
+              if(element.place == null) return;
+              var post_place = element.place;
+              // add marker
+              var pos = {lat: post_place.location.latitude, lng: post_place.location.longitude};
+              var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: post_place.name
+              });
+              // add infoWindow
+              var infoWindow = createInfoWindow(post_place.name, element.message);
+              marker.addListener('click', 
+                function() {
+                  infoWindow.open(map, marker);
+                }
+              );
+            });
+          }
+        );
+      }
 
+      function createInfoWindow(title, content){
+        // generate html of infoWindow
+        var contentString = '<div class="myInfoWindow">'+
+          '<h1 class="myFirstHeading">'+ title + '</h1>'+
+          '<div class="myInfoWindowContent">'+ content + '</div>'+
+          '</div>';
+          
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+        return infowindow;
+      }
+
+      function initMap() {
+        // Create Map object, center is Taipei 101
+        var center = {lat: 25.0339639, lng: 121.5622835};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: center
+        });
+        initFbData(map);
+      }
+    </script>
+  </body>
+</html>
 ```
 ![Google Map with FB posts location info](https://raw.githubusercontent.com/t6847kimo/blog/master/assets/img/Google%20Map%20Demo.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYyMDU5NjYwMSwtMTM2NjQzODk1NCwtMT
-I2OTY1NDU0MywyMTI2Nzg1MjM1LC0yMTE5MjUzOTM2LC0zMTQz
-ODYwMiw0NDYzNzczOSwtNTk4NjMwNzEyLDE5MjY2NjU1NjddfQ
-==
+eyJoaXN0b3J5IjpbLTE4NTE5NjAzNTQsLTEzNjY0Mzg5NTQsLT
+EyNjk2NTQ1NDMsMjEyNjc4NTIzNSwtMjExOTI1MzkzNiwtMzE0
+Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3XX
+0=
 -->
