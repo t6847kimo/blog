@@ -3,7 +3,7 @@ title: "用FB打卡紀錄在Google Map打點"
 layout: post
 tags: [Google Map, Facebook, Web]
 published: true
-comments: falstrue
+comments: true
 ---
 這一篇我們要用上一篇取得的資料來打點了!
 
@@ -19,10 +19,8 @@ comments: falstrue
 
 Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 這篇講的主要為網頁版的 **Maps Javascript API**.
 
-馬上來看### Hello Taipei 101!
-我稍微改了一下[官網](https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-tw)提供的 `Hello World` 範例, 我把中心點改到台北101
-
-### Hello Taipei 101!範例, 地圖的中心點為台北101, 然後在101打一個點(Marker). 
+### Hello Taipei 101!
+我稍微改了一下[官網](https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-tw)提供的 `Hello World` 範例, 我把中心點改到台北101, 然後在101打一個點(Marker). 
 
 語法非常簡單, 在load Google Map JS成功之後會call callback initMap.
 首先在div `id=map`建立一個**Map** Object, center參數就是地圖的中心.
@@ -171,7 +169,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 ![Google Map with FB posts location info](https://raw.githubusercontent.com/t6847kimo/blog/master/assets/img/Google%20Map%20Demo.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDQ0MzMzMzMwLC0xMzY2NDM4OTU0LC0xMj
+eyJoaXN0b3J5IjpbNzAzNzI4MzU5LC0xMzY2NDM4OTU0LC0xMj
 Y5NjU0NTQzLDIxMjY3ODUyMzUsLTIxMTkyNTM5MzYsLTMxNDM4
 NjAyLDQ0NjM3NzM5LC01OTg2MzA3MTIsMTkyNjY2NTU2N119
 -->
