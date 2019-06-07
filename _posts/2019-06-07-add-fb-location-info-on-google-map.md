@@ -18,7 +18,9 @@ comments: false
 Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 這篇講的主要為網頁版的 **Maps Javascript API**.
 
 讓我們來看官網提供的`Hello World`的例子
+```html
 
+```
 
 
 
@@ -63,6 +65,6 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAxNTMxNzAxOCwtNTk4NjMwNzEyLDE5Mj
-Y2NjU1NjddfQ==
+eyJoaXN0b3J5IjpbNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2Nj
+Y1NTY3XX0=
 -->
