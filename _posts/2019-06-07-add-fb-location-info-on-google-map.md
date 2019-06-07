@@ -24,8 +24,8 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 
 語法非常簡單, 在load Google Map JS成功之後會呼叫 `callback initMap()`.
 
-`initMap()`首先在`<div id="map"></div>`建立一個**Map Object**, `center` 就是地圖的中心.
-接著就新增 **Marker Object**在map上. Marker可以指定 **click listener**, 點擊後跳出自訂html內容的 **infoWindow**.
+`initMap()`首先在`<div id="map"></div>`建立一個**Map Object**, `center` 就是地圖的中心.<br>
+接著, 新增 **Marker Object**在map上. Marker可以指定 **click listener**, 點擊後跳出自訂html內容的 **infoWindow**.
 
 <iframe width="100%" height="300" src="//jsfiddle.net/t6847kimo/9h7fz1aw/6/embedded/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
@@ -170,7 +170,8 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 ![Google Map with FB posts location info](https://raw.githubusercontent.com/t6847kimo/blog/master/assets/img/Google%20Map%20Demo.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU2ODAzNTMzLC0xMzY2NDM4OTU0LC0xMj
-Y5NjU0NTQzLDIxMjY3ODUyMzUsLTIxMTkyNTM5MzYsLTMxNDM4
-NjAyLDQ0NjM3NzM5LC01OTg2MzA3MTIsMTkyNjY2NTU2N119
+eyJoaXN0b3J5IjpbLTE2MjQwNDYyODIsLTEzNjY0Mzg5NTQsLT
+EyNjk2NTQ1NDMsMjEyNjc4NTIzNSwtMjExOTI1MzkzNiwtMzE0
+Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3XX
+0=
 -->
