@@ -20,7 +20,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 讓我們來看官網提供的`Hello World`的例子
 ```html
 ```
-  <body>
+
       <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -47,7 +47,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
     async defer></script>
-  </body>
+
 
 
 
@@ -93,6 +93,6 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMDg1Nzc4MzUsLTMxNDM4NjAyLDQ0Nj
+eyJoaXN0b3J5IjpbLTIxMTkyNTM5MzYsLTMxNDM4NjAyLDQ0Nj
 M3NzM5LC01OTg2MzA3MTIsMTkyNjY2NTU2N119
 -->
