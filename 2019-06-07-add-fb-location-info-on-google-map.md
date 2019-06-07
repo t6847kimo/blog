@@ -2,8 +2,8 @@
 title: "用FB打卡紀錄在Google Map打點"
 layout: post
 tags: [Google Map, Facebook, Web]
-published: true
-comments: true
+published: false
+comments: false
 ---
 這一篇我們要用上一篇取得的資料來打點了!
 
@@ -125,5 +125,5 @@ User授權給Facebook App的東西就是Access Token, 可以把他當成是使�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzAzNzcyNjddfQ==
+eyJoaXN0b3J5IjpbMTkyNjY2NTU2NywzMDM3NzI2N119
 -->
