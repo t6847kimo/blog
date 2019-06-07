@@ -15,8 +15,9 @@ comments: false
 
 不過我們不用付費還是可以用最基本的功能來Demo, 只是會跳出警示跟浮水印, 如果真的要當產品供人大量使用的就要三思了! 有顧慮的話可以考慮開源免費的OpenStreet Map , 圖資主要以國外的較充足且API可能相較起來沒這麼強大, 沒辦法, 畢竟一分錢一分貨嘛!
 
-Google Map提供了 網頁版 Javascript Library, iOS/ Android SDK等服務
-主要功能就是透過Google Map API, 使用者能夠在地圖上顯示自訂的地點/路徑等資訊.
+Google Map提供了 網頁版 Maps Javascript API, iOS/ Android SDK等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 
+
+讓我們來看最簡單的例子
 
 
 
@@ -62,6 +63,6 @@ Google Map提供了 網頁版 Javascript Library, iOS/ Android SDK等服務
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3MjAzMDg2MCwtNTk4NjMwNzEyLDE5Mj
+eyJoaXN0b3J5IjpbMTcyMDM1OTM2NywtNTk4NjMwNzEyLDE5Mj
 Y2NjU1NjddfQ==
 -->
