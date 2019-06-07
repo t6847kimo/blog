@@ -17,9 +17,9 @@ comments: false
 
 Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 這篇講的主要為網頁版的 **Maps Javascript API**.
 
-馬上來看[官網](https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-tw)提供的`Hello World`例子,
+馬上來看[官網](https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-tw)提供的 `Hello World` 範例, 我把中心點改到台北101
 
-### Hello World
+### Hello Taipei 101!
 ```html
 <!DOCTYPE html>
 <html>
@@ -47,12 +47,12 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
+          center: {lat: 25.0339639, lng: 121.5622835}, // Taipei 101
+          zoom: 16	// zoom bigger
         });
       }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
     async defer></script>
   </body>
 </html>
@@ -101,7 +101,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTkzNTkzODAsLTEyNjk2NTQ1NDMsMj
+eyJoaXN0b3J5IjpbLTEzNjY0Mzg5NTQsLTEyNjk2NTQ1NDMsMj
 EyNjc4NTIzNSwtMjExOTI1MzkzNiwtMzE0Mzg2MDIsNDQ2Mzc3
 MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3XX0=
 -->
