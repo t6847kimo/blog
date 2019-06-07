@@ -2,7 +2,7 @@
 title: "用FB打卡紀錄在Google Map打點"
 layout: post
 tags: [Google Map, Facebook, Web]
-published: false
+published: true
 comments: false
 ---
 這一篇我們要用上一篇取得的資料來打點了!
@@ -93,6 +93,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMTkyNTM5MzYsLTMxNDM4NjAyLDQ0Nj
-M3NzM5LC01OTg2MzA3MTIsMTkyNjY2NTU2N119
+eyJoaXN0b3J5IjpbMjEyNjc4NTIzNSwtMjExOTI1MzkzNiwtMz
+E0Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcxMiwxOTI2NjY1NTY3
+XX0=
 -->
