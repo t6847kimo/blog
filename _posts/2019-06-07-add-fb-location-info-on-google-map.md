@@ -16,14 +16,47 @@ comments: false
 不過我們不用付費還是可以用最基本的功能來Demo, 只是會跳出警示跟浮水印, 如果真的要當產品供人大量使用的就要三思了! 有顧慮的話可以考慮開源免費的OpenStreet Map , 圖資主要以國外的較充足且API可能相較起來沒這麼強大, 沒辦法, 畢竟一分錢一分貨嘛!
 
 Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主要功能就是讓使用者能夠在地圖上顯示自訂的地點/路徑等資訊, 這篇講的主要為網頁版的 **Maps Javascript API**.
-不囉嗦, 馬上來看官網提供的`Hello World`的例子
 
+馬上來看官網提供的`Hello World`的例子
 ### Hello World
 ```html
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 8
+        });
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+    async defer></script>
+  </body>
+</html>
 ```
 
-{{ 123.html }}
 
 
 ### Full Code
@@ -67,7 +100,7 @@ Google Map提供了 **Maps Javascript API**, **iOS/ Android SDK**等服務, 主�
 </html>
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxMjE0MDM3NywyMTI2Nzg1MjM1LC0yMT
-E5MjUzOTM2LC0zMTQzODYwMiw0NDYzNzczOSwtNTk4NjMwNzEy
-LDE5MjY2NjU1NjddfQ==
+eyJoaXN0b3J5IjpbLTEyNjk2NTQ1NDMsMjEyNjc4NTIzNSwtMj
+ExOTI1MzkzNiwtMzE0Mzg2MDIsNDQ2Mzc3MzksLTU5ODYzMDcx
+MiwxOTI2NjY1NTY3XX0=
 -->
