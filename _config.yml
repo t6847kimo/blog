@@ -61,3 +61,6 @@ leancloud:
 plugins:
  - jekyll-feed
  - jekyll-seo-tag
+
+# LaTex Plug-in
+markdown: kramdown
