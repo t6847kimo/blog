@@ -187,7 +187,7 @@ Google了很久才找到答案，這與Intel CPU 針對 data hazard 設計的機
 
 而 Intel CPU的設計剛好紀錄這個位置的 **memory order buffer** 只能存 address 的 **LSB 12 Bits**，剛好就是 **4KB**，所以，在存取 `array[4096]` 時，Intel CPU 會以為我們在存取 `array[0]`，會試著把他forward給下一次的 `add`，而要直到 `array[4096]` 的位置被完全 decode 之後，CPU才發現原來之前的 forwarding 是錯的，得要重新 load 一次 array[4096]，此時會產生 **5 cycles** 的 delay。
 
-因此，在 **4K** 時一直不斷產生了 5 Cycles的delay，但與 L2 Cache Fetch 的時間比起來還是較少的 (CPU : L2 Cache = 1:14)，所以導致些微上升。
+因此，在 **4K** 時一直不斷產生了 5 Cycles 的 delay ，但與 L2 Cache Fetch 的時間比起來還是較少的 (CPU : L2 Cache = 1:14)，所以導致些微上升。
 
 全文: [4K aliasing - what causes it in this case?](https://software.intel.com/en-us/forums/intel-vtune-amplifier/topic/606846)
 > When an earlier (in program order) load issued after a later (in program order) store, a potential WAR (write-after-read) hazard exists. To detect such hazards, the memory order buffer (MOB) compares the low-order 12 bits of the load and store in every potential WAR hazard. If they match, the load is reissued, penalizing performance. However, as only 12 bits are compared, a WAR hazard may be detected falsely on loads and stores whose addresses are separated by a multiple of 4096 (2^12). This metric estimates the performance penalty of handling such falsely aliasing loads and stores.
@@ -207,7 +207,7 @@ Google了很久才找到答案，這與Intel CPU 針對 data hazard 設計的機
 
 我們利用前面得出的 **L1 Cache Line Size = 64**來加速洗 Cache 的速度，讓迴圈每次都存取一條 Cache Line ，一樣透過觀察執行速度的變化來估算各層的 Cache Size。
 
-以下 `access_array()`則會由小到大依序傳入不同的array size，預計當 array size 超過各層 cache size 時，會導致每次都要從下一層 memory 抓一條新的 cache line。
+以下 `access_array()`則會由小到大依序傳入不同的 array size，預計當 array size 超過各層 cache size 時，會導致每次都要從下一層 memory 抓一條新的 cache line。
 
 [Full Code](https://gist.github.com/t6847kimo/c3ed7464a903eb1b3a7a8d15ef0ac9a6)
 
@@ -227,19 +227,19 @@ void access_array(char* arr, unsigned size)
 
 ![L1/L2 Cache Size](https://github.com/t6847kimo/blog/blob/master/assets/img/l1_l2_cache_size_step_vs_time.PNG?raw=true)
 
-可以發現執行時間在 Size = **64K, 512K, 16M** 時明顯的上升了，可以得知L1/L2 Cache分別是 **32K** 及 **256K**，與前面得到的值相符。而L3則是 **16MB** ，因為剛好我的工作站的 L3 Cache 是**15MB**，而且我是每次將 Array Size 加倍，如果一次增加 1MB 應該可以提前看出差距。
+可以發現執行時間在 Size = **64K, 512K, 16M** 時明顯的上升了，可以得知 L1/L2 Cache 分別是 **32K** 及 **256K**，與前面得到的值相符。而L3則是 **16MB** ，因為剛好我的工作站的 L3 Cache 是**15MB**，而且我是每次將 Array Size 加倍，如果一次增加 1MB 應該可以提前看出差距。
 
 #### Size = 128 ~ 32K
 * 由於小於L1 Cache Size，除了一開始的 **Compulsory Miss** 之外，基本上不會miss。
 
-#### Size = 64K~256K
+#### Size = 64K ~ 256K
 * 在 **512**次之後開始產生 **L1 Cache Capacity Miss**，這時必須從 L2 Cache 將資料抓上來。
 
-#### Size = 512K~8M,
+#### Size = 512K ~ 8M
 * 在 **512**次之後開始產生 **L1 Cache Capacity Miss**，必須從 L2 Cache 將資料抓上來
 * 在 **4K**次之後開始產生 **L2 Cache Capacity Miss**，必須從 L3 Cache 將資料抓上來
 
-#### Size = 16M,
+#### Size = 16M
 * 在 **512**次之後開始產生 **L1 Cache Capacity Miss**，必須從 L2 Cache 將資料抓上來
 * 在 **4K**次之後開始產生 **L2 Cache Capacity Miss**，必須從 L3 Cache 將資料抓上來
 * 在 **245760**次 (15MB) 之後開始產生 **L3 Cache Capacity Miss**，必須從 RAM 將資料抓上來
