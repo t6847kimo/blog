@@ -83,7 +83,7 @@ LEVEL4_CACHE_LINESIZE              0
 > Conflict misses（衝突性失誤）：發生在 set-associative 或 direct-mapped caches ，當多個 blocks 競爭相同的 set。通常也稱作 collision misses。
 
 我們要做的就是想辦法造成 cache miss，因為 cache miss 就會產生上面所說 fetch 的 latency，所以我們就要想辦法一直去抓一塊不存在 cache 中的記憶體，將 cache fetch 的 latency 放大。<br>
-而Cache 的最小存取單位是 cache line，所以當我讀某個 address時，實際上都會抓該位置 align過後的大小，如果我下次讀寫的位置仍在cache line以內的話就不用抓新的，這時速度是非常快的。
+而Cache 的最小存取單位是 cache line，所以當我讀某個位置時，實際上都會抓該位置 align 過後的大小，如果我下次讀寫的位置仍在 cache line 以內的話就不用抓新的，這時速度是非常快的。
 
 以下 `access_array()`會由小到大依序傳入不同的 step，預計當 step 超過 cache 時，會導致每次都要從下一層抓一條新的 cache line。<br>
 為了避免問題太複雜，我們先不考慮 L2 Cache miss 的情況，因此我把 array size 設為 **256K** (小一點也可以)，剛好等於我的 L2 Cache size。<br>
@@ -107,8 +107,7 @@ Result
 
 ![Cache Line Size](https://github.com/t6847kimo/blog/blob/master/assets/img/cache_line_size_step_vs_time.PNG?raw=true)
 
-這個算法算是改良 [Gallery of Processor Cache Effects](http://igoro.com/archive/gallery-of-processor-cache-effects/) 這篇的算法，我認為較直觀一些，至少沒有被我 Google 到類似的算法，就姑且算是我原創的吧XD，如果有看到一樣的請跟我說！<br>
-程式非常簡單，但結果非常值得探討，我們可以從其中的轉折點觀察出很多細節。
+這個算是改良 [Gallery of Processor Cache Effects](http://igoro.com/archive/gallery-of-processor-cache-effects/) 這篇的算法，我認為較直觀一些，至少目前沒有被我 Google 到類似的做法。程式非常簡單，但結果非常值得探討，我們可以從其中的轉折點觀察出很多細節。
 
 ### Step 1~64
 
@@ -121,7 +120,7 @@ Result
 
 #### Step = 2
 * 每 **32** 次會有一次 **L1 cache line miss**，必須從 L2 cache fetch cache line -> 共會抓 **32 M / 32** 次
-* 在 **16K** 次之後，所有的 L1 cache line 都被填滿了，從這時候開始造成 **Capacity Miss**，接下來每條 cache line 都必須從L2抓取。與Step=1比較，這個 miss 只是因Step變大而提早開始，並不會被loop_cnt放大，我們可以忽略，接下來就不計入討論。
+* 在 **16K** 次之後，所有的 L1 cache line 都被填滿了，從這時候開始造成 **Capacity Miss**，接下來每條 cache line 都必須從L2抓取。與 Step=1 比較，這個 miss 只是因 Step 變大而提早開始，並不會被 loop_cnt 放大，我們可以忽略，接下來就不計入討論。
 
 #### Step = 64
 * 每 **64** 次會有一次 **L1 cache line miss**，必須從 L2 cache fetch cache line -> 共會抓 **32 M** 次。<br>
@@ -130,7 +129,7 @@ Result
 ### Step 64~512
 
 這個區間我卡關了很久，為什麼 64~512 的時間幾乎是差不多的？最後問到 Stackoverflow 跟 PTT 的大大們指出是因為CPU的 **Prefetch** 機制導致的，也就是他可以觀察你的讀寫規律，幫你偷偷去抓下一個「可能」要讀進來的位置到 Cache 中。<br>
-在 [Intel 64 and IA-32 Architecture Optimization Manual](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-optimization-manual.pdf)有更完整的說明。我在其中 *P2-30* 節錄一段重點。
+在 [Intel 64 and IA-32 Architecture Optimization Manual](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-optimization-manual.pdf)有更完整的說明。我在其中 **P2-30** 節錄一段重點。
 
 **Data Prefetch to L1 Data Cache**
 
@@ -201,9 +200,9 @@ Google了很久才找到答案，這與Intel CPU 針對 data hazard 設計的機
 
 ### Step 256K
 
-這個 Case 變慢的原因與前面提到的 *data hazard* 有關，因為這時 step 與 array size 相等，所以其實我們是一直對 array[0] 做計算，而每一次的計算與前一次的結果又有關係，導致 [Instruction-level parallelism](https://en.wikipedia.org/wiki/Instruction-level_parallelism) 失去做用，所以時間反而比對 array 的不同 element 存取來的慢。
+這個 Case 變慢的原因與前面提到的 *data hazard* 有關，因為這時 step 與 array size 相等，所以其實我們是一直對 `array[0]` 做計算，而每一次的計算與前一次的結果又有關係，導致 [Instruction-level parallelism](https://en.wikipedia.org/wiki/Instruction-level_parallelism) 失去做用，所以時間反而比對 array 的不同 element 存取來的慢。
 
-我把 access_array() 做一個簡單的 unroll ，也就是每次做兩次 arr[idx] += 10 並將 loop_cnt 減半，預期這個版本會跟前面的執行時間差不多，概念上的程式如下。
+我把 `access_array()` 做一個簡單的 unroll ，也就是每次做兩次 `arr[idx] += 10` 並將 `loop_cnt` 減半，預期這個版本會跟前面的執行時間差不多，概念上的程式如下。
 
 ```cpp
 void access_array(char* arr, int steps)
@@ -220,7 +219,7 @@ void access_array(char* arr, int steps)
 }
 ```
 
-但很麻煩的是因為我開了 `gcc -O1` 優化，所以產生的組語會把這兩次加法合併，變成 add BYTE PTR [rdi+rcx], 20 ，這樣就看不出差異了，所以我直接改組語如下。
+但很麻煩的是因為我開了 `gcc -O1` 優化，所以產生的組語會把這兩次加法合併，變成 `add BYTE PTR [rdi+rcx], 20` ，這樣就看不出差異了，所以我直接改組語如下。
 
 ```
 access_array(char*, int):
@@ -242,7 +241,7 @@ access_array(char*, int):
 
 ## Q2: 如何計算 L1 Cache & L2 Cache Size
 
-我們利用前面得出的 **L1 Cache Line Size = 64**來加速洗 Cache 的速度，讓迴圈每次都存取一條 Cache Line ，一樣透過觀察執行速度的變化來估算各層的 Cache Size。
+我們利用前面得出的 **L1 Cache Line Size = 64** 來加速洗 Cache 的速度，讓迴圈每次都存取一條 Cache Line ，一樣透過觀察執行速度的變化來估算各層的 Cache Size。
 
 以下 `access_array()`則會由小到大依序傳入不同的 array size，預計當 array size 超過各層 cache size 時，會導致每次都要從下一層 memory 抓一條新的 cache line。
 
@@ -267,7 +266,7 @@ void access_array(char* arr, unsigned size)
 可以發現執行時間在 Size = **64K, 512K, 16M** 時明顯的上升了，可以得知 L1/L2 Cache 分別是 **32K** 及 **256K**，與前面得到的值相符。而L3則是 **16MB** ，因為剛好我的工作站的 L3 Cache 是**15MB**，而且我是每次將 Array Size 加倍，如果一次增加 1MB 應該可以提前看出差距。
 
 #### Size = 128 ~ 32K
-* 由於小於L1 Cache Size，除了一開始的 **Compulsory Miss** 之外，基本上不會miss。
+* 由於小於L1 Cache Size，除了一開始的 **Compulsory Miss** 之外，基本上不會 miss。
 
 #### Size = 64K ~ 256K
 * 在 **512**次之後開始產生 **L1 Cache Capacity Miss**，這時必須從 L2 Cache 將資料抓上來。
@@ -281,7 +280,7 @@ void access_array(char* arr, unsigned size)
 * 在 **4K**次之後開始產生 **L2 Cache Capacity Miss**，必須從 L3 Cache 將資料抓上來
 * 在 **245760**次 (15MB) 之後開始產生 **L3 Cache Capacity Miss**，必須從 RAM 將資料抓上來
 
-## 同場加映
+## Reference
 這幾題都是 Stackoverflow 上其他人在寫程式時真的碰到效能上的問題，原因與解法在上面的解釋非常完整，討論也非常熱烈，看完保證功力大增！
 
 * [Why does the speed of memcpy() drop dramatically every 4KB?](https://stackoverflow.com/questions/21038965/why-does-the-speed-of-memcpy-drop-dramatically-every-4kb)
