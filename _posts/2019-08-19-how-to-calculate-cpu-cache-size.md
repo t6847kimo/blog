@@ -201,7 +201,44 @@ Google了很久才找到答案，這與Intel CPU 針對 data hazard 設計的機
 
 ### Step 256K
 
-這裡其實有陷阱，反而變慢的原因其實跟 cache 沒什麼關係，非常簡單，有興趣的可以猜猜看XD。
+這個 Case 變慢的原因與前面提到的 *data hazard* 有關，因為這時 step 與 array size 相等，所以其實我們是一直對 array[0] 做計算，而每一次的計算與前一次的結果又有關係，導致 [Instruction-level parallelism](https://en.wikipedia.org/wiki/Instruction-level_parallelism) 失去做用，所以時間反而比對 array 的不同 element 存取來的慢。
+
+我把 access_array() 做一個簡單的 unroll ，也就是每次做兩次 arr[idx] += 10 並將 loop_cnt 減半，預期這個版本會跟前面的執行時間差不多，概念上的程式如下。
+
+```cpp
+void access_array(char* arr, int steps)
+{
+    const int loop_cnt = 1024 * 1024 * 32; // arbitary loop count
+    int idx = 0;
+    for (int i = 0; i < loop_cnt / 2; i++)
+    {
+        arr[idx] += 10;
+        arr[idx] += 10;
+        idx = (idx + steps) & (ARRAY_SIZE - 1); // if use %, the latency will be too high to see the gap
+        
+    }
+}
+```
+
+但很麻煩的是因為我開了 `gcc -O1` 優化，所以產生的組語會把這兩次加法合併，變成 add BYTE PTR [rdi+rcx], 20 ，這樣就看不出差異了，所以我直接改組語如下。
+
+```
+access_array(char*, int):
+  mov edx, 16777216
+  mov eax, 0
+.L2:
+  movsx rcx, eax
+  add BYTE PTR [rdi+rcx], 10
+  add BYTE PTR [rdi+rcx], 10 # add sequencially to make data hazard on purpose
+  add eax, esi
+  and eax, 262143
+  sub edx, 1
+  jne .L2
+  rep ret
+```
+#### Result
+* Before: 74793 us
+* After:  75242 us
 
 ## Q2: 如何計算 L1 Cache & L2 Cache Size
 
