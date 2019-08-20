@@ -252,7 +252,7 @@ access_array(char*, int):
 void access_array(char* arr, unsigned size)
 {
     const int loop_cnt = 64 * 1024 * 1024; // arbitary loop count
-    for (int i = 0; i < LOOP_CNT; i++)
+    for (int i = 0; i < loop_cnt; i++)
     {
         arr[(i * CACHE_LINE_SIZE) & (size - 1)] += 10;
     }
