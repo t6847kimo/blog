@@ -123,7 +123,7 @@ Result
 * 在 **16K** 次之後，所有的 L1 cache line 都被填滿了，從這時候開始造成 **Capacity Miss**，接下來每條 cache line 都必須從L2抓取。與 Step=1 比較，這個 miss 只是因 Step 變大而提早開始，並不會被 loop_cnt 放大，我們可以忽略，接下來就不計入討論。
 
 #### Step = 64
-* 每 **64** 次會有一次 **L1 cache line miss**，必須從 L2 cache fetch cache line -> 共會抓 **32 M** 次。<br>
+* 每 **1** 次會有一次 **L1 cache line miss**，必須從 L2 cache fetch cache line -> 共會抓 **32 M** 次。<br>
 這時 Step1 與 64 的差距就出來了， loop 每一次都必須要從 L2 cache 抓新的資料，而一計算完後，馬上又再抓下一條新的，所以 cache line 就失去了加速的作用，我們可以確認 cache line size 為 **64 Bytes**.
 
 ### Step 64~512
